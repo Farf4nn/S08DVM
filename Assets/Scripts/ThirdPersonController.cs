@@ -18,6 +18,13 @@ public class ThirdPersonController : MonoBehaviour
     public CinemachineCamera characterAimCamera;
     [FoldoutGroup("References")]
     public LineRenderer RayPrefab;
+    [FoldoutGroup("References")]
+    public LayerMask TestLayer;
+
+    [FoldoutGroup("References")]
+    public GameObject GranadePrefab;
+    [FoldoutGroup("References")]
+    public float TurretPrefab;
 
 
     [FoldoutGroup("Controller")]
@@ -30,6 +37,9 @@ public class ThirdPersonController : MonoBehaviour
     public float jumpForce = 10;
     [FoldoutGroup("Controller")]
     public float pushForce = 4;
+
+    public float trhowForce;
+
 
     [FoldoutGroup("Controller/Dash")]
     private bool IsDashing;
@@ -320,8 +330,13 @@ public class ThirdPersonController : MonoBehaviour
     {
         OnAttackEvent?.Invoke();
         source.GenerateImpulse();
-        Debug.Log("Attack");
-        Physics.Raycast(WeaponShootAnchor.position,characterAimCamera.transform.forward,out RaycastHit hit,100);
+        //Debug.Log("Attack");
+        if (Physics.Raycast(WeaponShootAnchor.position, characterAimCamera.transform.forward, out RaycastHit hit, 100, TestLayer))
+        {
+            Debug.Log("Hit smt");
+            //GameObject turret = Instantiate(TurretPrefab, hit.point, Quaternion.identity);
+            //turret.transform.up = hit.normal;
+        }
 
         if(hit.collider != null)
         {
@@ -337,6 +352,14 @@ public class ThirdPersonController : MonoBehaviour
             
          
         }
+
+    }
+    private void ThrowSmt(InputAction.CallbackContext ctx)
+    {
+        GameObject granade = Instantiate(GranadePrefab, transform.position + gameObject.transform.forward*1.5f, Quaternion.identity);
+        Vector3 dir = characterCamera.transform.forward;
+
+        granade.GetComponent<Rigidbody>().AddForce(dir * trhowForce, ForceMode.Impulse);
     }
     public float GetSpeed()
     {
