@@ -95,6 +95,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "ThrowGranade",
+                    "type": "Button",
+                    "id": "4617f2c8-2146-41be-b08d-77b3994bc3e3",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -491,6 +500,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Aim",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d0b38b77-78a8-4820-b637-adc1b55d8087",
+                    "path": "<Keyboard>/g",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "ThrowGranade",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

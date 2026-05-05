@@ -19,12 +19,11 @@ public class ThirdPersonController : MonoBehaviour
     [FoldoutGroup("References")]
     public LineRenderer RayPrefab;
     [FoldoutGroup("References")]
-    public LayerMask TestLayer;
-
+    public LayerMask enemyMask;
     [FoldoutGroup("References")]
     public GameObject GranadePrefab;
     [FoldoutGroup("References")]
-    public float TurretPrefab;
+    public GameObject TurretPrefab;
 
 
     [FoldoutGroup("Controller")]
@@ -37,8 +36,7 @@ public class ThirdPersonController : MonoBehaviour
     public float jumpForce = 10;
     [FoldoutGroup("Controller")]
     public float pushForce = 4;
-
-    public float trhowForce;
+    
 
 
     [FoldoutGroup("Controller/Dash")]
@@ -67,10 +65,13 @@ public class ThirdPersonController : MonoBehaviour
 
     public bool aimMode = false;
 
+    
     [FoldoutGroup("Attack")]
     public Transform WeaponShootAnchor;
     [FoldoutGroup("Attack")]
     public Vector2 MouseMovement;
+    [FoldoutGroup("Granade")]
+    public float throwForce = 1;
     [FoldoutGroup("Attack")]
     [SerializeField] private float sensitivity = 2f;
     [SerializeField] private float yaw;
@@ -134,9 +135,9 @@ public class ThirdPersonController : MonoBehaviour
         inputs.Player.Look.performed += ctx => MouseMovement = ctx.ReadValue<Vector2>();
         inputs.Player.Look.canceled += ctx => MouseMovement = Vector2.zero;
         // inputs.Player.Sprint.performed += OnDash;
-    }
 
- 
+        inputs.Player.ThrowGranade.performed += ThrowSmt;
+    }
 
     void Start()
     {
@@ -331,15 +332,11 @@ public class ThirdPersonController : MonoBehaviour
         OnAttackEvent?.Invoke();
         source.GenerateImpulse();
         //Debug.Log("Attack");
-        if (Physics.Raycast(WeaponShootAnchor.position, characterAimCamera.transform.forward, out RaycastHit hit, 100, TestLayer))
+        //if (Physics.SphereCast(WeaponShootAnchor.position,5f, characterAimCamera.transform.forward, out RaycastHit hit, 100f, enemyMask))
+
+        if (Physics.Raycast(WeaponShootAnchor.position, characterAimCamera.transform.forward, out RaycastHit hit, 100f, enemyMask))
         {
             Debug.Log("Hit smt");
-            //GameObject turret = Instantiate(TurretPrefab, hit.point, Quaternion.identity);
-            //turret.transform.up = hit.normal;
-        }
-
-        if(hit.collider != null)
-        {
             //  Physics.Raycast(transform.position, transform.right, out RaycastHit hitRight, rayLenght);
             LineRenderer ray = Instantiate(RayPrefab, transform.position, Quaternion.identity);
             ray.gameObject.transform.position = WeaponShootAnchor.position;
@@ -349,8 +346,12 @@ public class ThirdPersonController : MonoBehaviour
             ray.SetPosition(1, hit.point);
 
 
-            
-         
+            GameObject turret = Instantiate(TurretPrefab, hit.point, Quaternion.identity);
+            turret.transform.up = hit.normal;
+        }
+        else
+        {
+            Debug.Log("Miss");
         }
 
     }
@@ -359,7 +360,7 @@ public class ThirdPersonController : MonoBehaviour
         GameObject granade = Instantiate(GranadePrefab, transform.position + gameObject.transform.forward*1.5f, Quaternion.identity);
         Vector3 dir = characterCamera.transform.forward;
 
-        granade.GetComponent<Rigidbody>().AddForce(dir * trhowForce, ForceMode.Impulse);
+        granade.GetComponent<Rigidbody>().AddForce(dir * throwForce, ForceMode.Impulse);
     }
     public float GetSpeed()
     {

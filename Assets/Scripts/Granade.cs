@@ -7,7 +7,7 @@ public class Granade : MonoBehaviour
     public float radius;
     public LayerMask mask;
 
-    public UnityEvent OnExplosion;
+    public UnityEvent OnExplotion;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -30,7 +30,7 @@ public class Granade : MonoBehaviour
             //->
         }
         //->sistema de particulas de explosion
-        //OnExplotion?.Invoke();
+        OnExplotion?.Invoke();
 
         Destroy(gameObject);
     }
